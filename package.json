@@ -5,22 +5,29 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "start": "node server/index.js"
+    "start": "node server/index.js",
+    "lint": "eslint --fix src",
+    "test": "mocha --exit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "exceljs": "^4.1.1",
     "express": "^4.17.1",
+    "helmet": "^4.1.0",
     "morgan": "^1.10.0",
-    "nodemon": "^2.0.4",
+    "read-excel-file": "^4.0.7",
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "dotenv": "^8.2.0",
-    "helmet": "^4.1.0",
-    "read-excel-file": "^4.0.7"
+    "eslint": "^7.7.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "mocha": "^8.1.2",
+    "nodemon": "^2.0.4",
+    "supertest": "^4.0.2"
   }
 }
