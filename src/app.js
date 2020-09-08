@@ -4,9 +4,8 @@ const helmet = require('helmet');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
+const serverLog = require('./serverlog/serverlogger');
 
-
-require('dotenv').config();
 
 const middlewares = require('./middlewares');
 const api = require('./api');
@@ -18,17 +17,10 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-// create a write stream (in append mode)
+
 const accessLogStream = fs.createWriteStream(path.join(__dirname, '../logs/access.log'), { flags: 'a' })
-// setup the logger
-app.use(morgan('combined', { stream: accessLogStream }))
-
-app.get('/', (req, res) => {
-    res.json({
-        message: '🦄🌈✨👋🌎🌍🌏✨🌈🦄'
-    });
-});
-
+app.use(morgan('combined', { stream: accessLogStream }));
+app.use(express.static(__dirname + '/public/'));
 app.use('/api/v1', api);
 
 app.use(middlewares.notFound);
