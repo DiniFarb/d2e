@@ -19,13 +19,11 @@ function readDataFromExcelFile() {
         objectsNotMatchNotAllowedStrings: browserObjects.filter(object=> checkIfItsAnAllowedStringValue(object,notAllowedStrings)).length
     }
     browserObjects.forEach(object=>{
-        if(object['Alias'] !== "" && objectModelsAndTypes.map(({ objectModel }) => objectModel).includes(object['Object Model'])){
-            if(checkIfItsAnAllowedStringValue(object, notAllowedStrings)) {
+        if(object['Alias'] !== "" && objectModelsAndTypes.map(({ objectModel }) => objectModel).includes(object['Object Model']) &&
+            checkIfItsAnAllowedStringValue(object, notAllowedStrings)) {
                 object['Data Type'] = objectModelsAndTypes.find(item => item.objectModel === object['Object Model']).dataType;
                 filteredObjects.push(object);
             }
-        }
-
     });
     console.log(browserObjects.length);
     console.log(filteredObjects.length);
