@@ -4,9 +4,6 @@ const helmet = require('helmet');
 const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
-const serverLog = require('./serverlog/serverlogger');
-
-
 const middlewares = require('./middlewares');
 const api = require('./api');
 
