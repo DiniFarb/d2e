@@ -10,7 +10,8 @@ const getObjectModelsAndTypes = function (){
         XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]).forEach(model=>{
             objectModelsAndTypes.push({
                     objectModel: model["Object Model"],
-                    dataType: model["Data Type"]
+                    dataType: model["Data Type"],
+                    readProperty: model["Read Property"]
             });
         });
         return objectModelsAndTypes
