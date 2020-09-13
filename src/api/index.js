@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const path = require('path');
 const {isImportDone, readDataFromExcelFile, getClientList, getDataSummary} = require('./excelDataHandler');
 const serverLog = require('../serverlog/serverlogger');
 
@@ -23,12 +24,20 @@ router.get('/import', (req, res,next ) => {
 });
 
 router.get('/downloadClientList', (req, res,next ) => {
-    serverLog.info("Get client list " + req.params);
+    serverLog.info("Get client list client " + JSON.stringify(req.query.clientNumber));
+    res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+        "Content-Disposition",
+        "attachment; filename=" + 'client' + req.query.clientNumber + ".xlsx"
+    );
+
     try{
-        res.download(__dirname, '../public/download/ ' + req.params.client + ".xlsx");
-        res.status(200).json({message: "😉"});
+        res.download(path.join(__dirname, '../public/client' + req.query.clientNumber + ".xlsx"));
     } catch (err){
-        serverLog.error("Client list creation error: " + err.message);
+        serverLog.error("download error: " + err.message);
         next(err);
     }
 });

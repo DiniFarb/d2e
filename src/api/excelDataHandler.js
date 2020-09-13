@@ -53,7 +53,7 @@ function readDataAndCreateFiles() {
     let data = XLSX.utils.json_to_sheet(managementData);
     data["!autofilter"] = {ref: "A1:I9"};
     XLSX.utils.book_append_sheet(wb,data, "Client06_Management");
-    XLSX.writeFile(wb,path.join( __dirname, '../public/download/client006.xlsx'));
+    XLSX.writeFile(wb,path.join( __dirname, '../public/client006.xlsx'));
     importState = true;
 }
 
@@ -76,7 +76,7 @@ function createClientExcel(data, clientNumber){
         data_UI4["!autofilter"] = {ref: "A1:I9"};
         XLSX.utils.book_append_sheet(wb,data_R8, "Client" + clientNumber + "_VT_R8");
         XLSX.utils.book_append_sheet(wb,data_UI4,"Client" + clientNumber + " BAC_VT_UI4");
-        XLSX.writeFile(wb,path.join( __dirname, '../public/download/client0' + clientNumber + '.xlsx'));
+        XLSX.writeFile(wb,path.join( __dirname, '../public/client0' + clientNumber + '.xlsx'));
 }
 
 function getDataSummary() {
