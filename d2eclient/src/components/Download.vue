@@ -19,42 +19,53 @@
     </h2>
       <v-btn
       class="DlButton"
-      @click="downloadButton('001')"
+      @click="downloadClientList('001')"
       >
       Client 1
       </v-btn>
       <v-btn
           class="DlButton"
-          @click="downloadButton('002')"
+          @click="downloadClientList('002')"
       >
         Client 2
       </v-btn>
 
       <v-btn
           class="DlButton"
-          @click="downloadButton('003')"
+          @click="downloadClientList('003')"
       >
         Client 3
       </v-btn>
 
     <v-btn
           class="DlButton"
-          @click="downloadButton('004')"
+          @click="downloadClientList('004')"
       >
         Client 4
       </v-btn>
 
     <v-btn
           class="DlButton"
-          @click="downloadButton('005')"
+          @click="downloadClientList('005')"
       >
         Client 5
       </v-btn>
     <v-btn
         class="DlButton"
-        @click="downloadButton('006')"
+        @click="downloadClientList('006')"
     >
       Client 6
+    </v-btn>
+    <br>
+    <h2 class="text--accent-1"
+    >
+      Excel for SQL 📥
+    </h2>
+    <v-btn
+        class="DlButton"
+        @click="downloadAliasList()"
+    >
+      Alias list
     </v-btn>
 
   </v-container>
@@ -74,9 +85,14 @@ export default {
   },
 
   methods: {
-    async downloadButton(clientNumber) {
+    async downloadClientList(clientNumber) {
       this.downloadActive = true;
       await REST_interface.getClientList(clientNumber);
+      this.downloadActive = false;
+    },
+    async downloadAliasList() {
+      this.downloadActive = true;
+      await REST_interface.getAliasList();
       this.downloadActive = false;
     },
   },

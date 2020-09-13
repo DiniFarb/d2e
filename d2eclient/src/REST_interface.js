@@ -14,6 +14,17 @@ class REST_interface {
                 }
             )))
     }
+    static getAliasList(){
+        return new Promise(((resolve, reject) =>
+            axios.get(url + '/aliasList').then((res) => {
+                resolve(
+                    this.forceFileDownload(res,"alias_list")
+                );
+            }).catch((err) => {
+                    reject(err);
+                }
+            )))
+    }
 
     static getClientList(clientNumber) {
         return new Promise(((resolve, reject) =>
@@ -22,18 +33,18 @@ class REST_interface {
                 clientNumber: clientNumber
                 },responseType: 'arraybuffer'}).then((res) => {
                 resolve(
-                    this.forceFileDownload(res, clientNumber)
+                    this.forceFileDownload(res, 'client'+ clientNumber)
                 );
             }).catch((err) => {
                     reject(err);
                 }
             )))
     }
-    static forceFileDownload(response, clientNumber){
+    static forceFileDownload(response, fileName){
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a')
         link.href = url
-        link.setAttribute('download', 'client' + clientNumber + '.xlsx') //or any other extension
+        link.setAttribute('download', fileName + '.xlsx') //or any other extension
         document.body.appendChild(link)
         link.click()
     }

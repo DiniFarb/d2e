@@ -4,27 +4,47 @@
     <v-card v-if="!this.dash.importState.startsWith('No data')"
             class="overview">
       <v-card-text>
-        <p v-if="!this.dash.importState.startsWith('No data')">Last import 🟢</p>
-        <div>OPC Server Tags</div>
-        <p class="display-1 text--primary">
-          {{this.dash.summary.objectsTotal}}
-        </p>
-        <div>Valid Tags</div>
-        <p class="display-1 text--primary">
-          {{this.dash.summary.validObjects}}
-        </p>
-        <div>
-        <div>Analog Tags</div>
+        <v-row>
+          <v-col>
+        <p>Last import 🟢</p>
+          </v-col>
+          <v-col>
+            <p>Total OPC server tags: {{this.dash.summary.objectsTotal}} </p>
+          </v-col>
+          <v-col>
+            <p>Total filtered out: -{{this.dash.summary.objectsTotal - this.dash.summary.validObjects}}</p>
+          </v-col>
+        </v-row>
+            <div>Total tags in scope</div>
+            <p class="display-1 text--primary">
+              {{this.dash.summary.validObjects}}
+            </p>
+        <v-row>
+          <v-col>
+        <div>Analog tags</div>
         <p class="display-1 text--primary">
           {{this.dash.summary.analogValues}}
         </p>
-        <div>Binary Tags</div>
+          </v-col>
+          <v-col>
+        <div>Binary tags</div>
         <p class="display-1 text--primary">
           {{this.dash.summary.binaryValues}}
         </p>
-        </div>
+          </v-col>
+          <v-col>
+            <div>Desigo server tags</div>
+            <p class="display-1 text--primary">
+              {{this.dash.summary.desigoCCValues}}
+            </p>
+          </v-col>
+        </v-row>
       </v-card-text>
     </v-card>
+    <v-card v-if="this.dash.importState.startsWith('No data')"
+            class="overview">
+      <v-alert class="error">No data import yet 😥 ... <br>Ask siemens for help🧠</v-alert>
+      </v-card>
   </v-container>
 </template>
 
@@ -46,7 +66,7 @@ export default {
   methods: {
     async getOverview() {
      this.dash =  await REST_interface.getState();
-     console.log(this.dash);
+
     },
   }
 }

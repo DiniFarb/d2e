@@ -40,6 +40,7 @@ function readDataAndCreateFiles() {
     summary.validObjects = filteredObjects.length
     summary.analogValues = filteredObjects.filter(object=> object.dataType === "VT_R8").length
     summary.binaryValues = filteredObjects.filter(object=> object.dataType === "VT_UI4").length
+    summary.desigoCCValues = filteredObjects.filter(object=> object.dataType === "VT_BOOL" || object.dataType === "VT_I4").length
     createClientExcel(getClientList("BAC","B01"),"01");
     createClientExcel(getClientList("BAC","B02"),"02");
     createClientExcel(getClientList("BAC","B03","B05","B06","B07"),"03");
@@ -56,6 +57,16 @@ function readDataAndCreateFiles() {
     data["!autofilter"] = {ref: "A1:I9"};
     XLSX.utils.book_append_sheet(wb,data, "Client06_Management");
     XLSX.writeFile(wb,path.join( __dirname, '../public/client006.xlsx'));
+    let aliasList = [];
+    filteredObjects.forEach(object=>{
+        aliasList.push({
+            name: "Alias",
+            value: object.alias
+        });
+    });
+    let alias = XLSX.utils.json_to_sheet(aliasList);
+    XLSX.utils.book_append_sheet(wb,alias, "AliasList");
+    XLSX.writeFile(wb,path.join( __dirname, '../public/alias_list.xlsx'));
     importState = true;
 }
 

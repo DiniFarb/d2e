@@ -3,7 +3,6 @@
     <v-app-bar
         id="home-app-bar"
         app
-
         elevation="1"
         height="60"
         hide-on-scroll

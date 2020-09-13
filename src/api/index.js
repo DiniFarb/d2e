@@ -43,4 +43,24 @@ router.get('/downloadClientList', (req, res,next ) => {
     }
 });
 
+router.get('/aliasList', (req, res,next ) => {
+    serverLog.info("Get alias list ");
+    res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+        "Content-Disposition",
+        "attachment; filename=" + "alias_list.xlsx"
+    );
+
+    try{
+        res.download(path.join(__dirname, '../public/alias_list.xlsx'));
+    } catch (err){
+        serverLog.error("download error: " + err.message);
+        next(err);
+    }
+});
+
+
 module.exports = router;
