@@ -15,7 +15,7 @@
     >Download</h1>
     <h2 class="text--accent-1"
     >
-      Excel for OPC Clients
+      Excel for OPC clients 🐱‍👤
     </h2>
       <v-btn
       class="DlButton"
@@ -50,6 +50,12 @@
       >
         Client 5
       </v-btn>
+    <v-btn
+        class="DlButton"
+        @click="downloadButton('006')"
+    >
+      Client 6
+    </v-btn>
 
   </v-container>
 </template>

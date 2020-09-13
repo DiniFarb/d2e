@@ -38,6 +38,8 @@ function readDataAndCreateFiles() {
             }
     });
     summary.validObjects = filteredObjects.length
+    summary.analogValues = filteredObjects.filter(object=> object.dataType === "VT_R8").length
+    summary.binaryValues = filteredObjects.filter(object=> object.dataType === "VT_UI4").length
     createClientExcel(getClientList("BAC","B01"),"01");
     createClientExcel(getClientList("BAC","B02"),"02");
     createClientExcel(getClientList("BAC","B03","B05","B06","B07"),"03");
