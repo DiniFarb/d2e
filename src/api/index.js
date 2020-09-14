@@ -47,7 +47,7 @@ router.get('/downloadClientList', (req, res,next ) => {
     );
 
     try{
-        res.download(path.join(__dirname, '../public/client' + req.query.clientNumber + ".xlsx"));
+        res.download(path.join(__dirname, '../download/client' + req.query.clientNumber + ".xlsx"));
     } catch (err){
         serverLog.error("download error: " + err.message);
         next(err);
@@ -66,7 +66,7 @@ router.get('/aliasList', (req, res,next ) => {
     );
 
     try{
-        res.download(path.join(__dirname, '../public/alias_list.xlsx'));
+        res.download(path.join(__dirname, '../download/alias_list.xlsx'));
     } catch (err){
         serverLog.error("download error: " + err.message);
         next(err);
