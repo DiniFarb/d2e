@@ -1,24 +1,29 @@
 <template>
   <v-container >
     <h1 class="OVTitle">Overview</h1>
-    <v-card v-if="!this.dash.importState.startsWith('No data')"
-            class="overview">
+    <v-card v-if="importState" class="pa-1 overview">
+      <v-alert dense class="text--accent-1 ma-2" type="success">Last import at <span class="lastImport">{{this.lastImport}}</span></v-alert>
       <v-card-text>
-        <v-row>
-          <v-col>
-        <p>Last import 🟢</p>
-          </v-col>
-          <v-col>
-            <p>Total OPC server tags: {{this.dash.summary.objectsTotal}} </p>
-          </v-col>
-          <v-col>
-            <p>Total filtered out: -{{this.dash.summary.objectsTotal - this.dash.summary.validObjects}}</p>
-          </v-col>
-        </v-row>
             <div>Total tags in scope</div>
             <p class="display-1 text--primary">
               {{this.dash.summary.validObjects}}
             </p>
+        <div class="pieChartSubSystem"></div>
+        <v-row
+            justify="center" >
+          <v-col cols="3">
+            <div>S7 tags</div>
+            <p class="display-1 text--primary">
+              {{this.dash.summary.S7Values}}
+            </p>
+          </v-col>
+          <v-col cols="3">
+            <div>BAC tags</div>
+            <p class="display-1 text--primary">
+              {{this.dash.summary.BACValues}}
+            </p>
+          </v-col>
+        </v-row>
         <v-row>
           <v-col>
         <div>Analog tags</div>
@@ -41,10 +46,7 @@
         </v-row>
       </v-card-text>
     </v-card>
-    <v-card v-if="this.dash.importState.startsWith('No data')"
-            class="overview">
-      <v-alert class="error">No data import yet 😥 ... <br>Ask siemens for help🧠</v-alert>
-      </v-card>
+    <v-alert v-if="!importState" class="error">No data import yet 😥 ... <br>Ask siemens for help🧠</v-alert>
   </v-container>
 </template>
 
@@ -57,6 +59,8 @@ export default {
   data() {
     return {
       dash: "",
+      lastImport: "",
+      importState: false
     }
   },
   mounted() {
@@ -65,9 +69,19 @@ export default {
 
   methods: {
     async getOverview() {
-     this.dash =  await REST_interface.getState();
+      try {
+        this.dash = await REST_interface.getState();
+        this.lastImport = this.parseDate(this.dash.summary.updated_at);
+        this.importState = this.dash.importState;
+      } catch (e) {
+        this.importState = false
+      }
 
     },
+
+    parseDate(date){
+    return new Date(date).toDateString();
+    }
   }
 }
 </script>
@@ -78,6 +92,13 @@ export default {
   color: #ffffff;
 }
 .overview{
-  background: #464b4f;
+  background: #34495E;
 }
+.boxes{
+  background: #5D6D7E;
+}
+.lastImport {
+  font-weight: bold;
+}
+
 </style>

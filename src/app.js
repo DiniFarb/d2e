@@ -6,7 +6,6 @@ const fs = require('fs');
 const path = require('path');
 const middlewares = require('./middlewares');
 const api = require('./api');
-
 const app = express();
 
 app.use(morgan('dev'));
@@ -22,5 +21,6 @@ app.use('/api/v1', api);
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);
+
 
 module.exports = app;

@@ -6,6 +6,7 @@ let filteredObjects = [];
 let summary = {};
 let importState = false;
 
+
 function readDataAndCreateFiles() {
     let objectModelsAndTypes = getObjectModelsAndTypes();
     let notAllowedStrings = getNotAllowedStrings();
@@ -18,8 +19,9 @@ function readDataAndCreateFiles() {
         objectsTotal: browserObjects.length,
         objectsWithAlias: browserObjects.filter(object=> object['Alias'] !== "").length,
         objectsMatchObjectModels: browserObjects.filter(object=> objectModelsAndTypes.map(({ objectModel }) => objectModel).includes(object['Object Model'])).length,
-        objectsMatchNotAllowedStrings: browserObjects.filter(object=> !checkIfItsAnAllowedStringValue(object,notAllowedStrings)).length
-    }
+        objectsMatchNotAllowedStrings: browserObjects.filter(object=> !checkIfItsAnAllowedStringValue(object,notAllowedStrings)).length,
+        updated_at: new Date()
+    };
     browserObjects.forEach(object=>{
         if(object['Alias'] !== "" && objectModelsAndTypes.map(({ objectModel }) => objectModel).includes(object['Object Model']) &&
             checkIfItsAnAllowedStringValue(object, notAllowedStrings)) {
@@ -34,39 +36,45 @@ function readDataAndCreateFiles() {
                 finalObject.maxValue = object['Main Value.Max'];
                 finalObject.alias = object['Alias'];
                 finalObject.description = object['Object Description'];
+                if(objectRefPreEdit.startsWith("App")){
+                    console.log(objectRefPreEdit);
+                }
                 filteredObjects.push(finalObject);
             }
     });
-    summary.validObjects = filteredObjects.length
-    summary.analogValues = filteredObjects.filter(object=> object.dataType === "VT_R8").length
-    summary.binaryValues = filteredObjects.filter(object=> object.dataType === "VT_UI4").length
-    summary.desigoCCValues = filteredObjects.filter(object=> object.dataType === "VT_BOOL" || object.dataType === "VT_I4").length
+    summary.validObjects = filteredObjects.length;
+    summary.analogValues = filteredObjects.filter(object=> object.dataType === "VT_R8").length;
+    summary.binaryValues = filteredObjects.filter(object=> object.dataType === "VT_UI4").length;
+    summary.desigoCCValues = filteredObjects.filter(object=> object.dataType === "VT_BOOL" || object.dataType === "VT_I4").length;
+    summary.S7Values = filteredObjects.filter(object=> object.subsystemType === "S7").length;
+    summary.BACValues = filteredObjects.filter(object=> object.subsystemType === "BAC").length;
     createClientExcel(getClientList("BAC","B01"),"01");
     createClientExcel(getClientList("BAC","B02"),"02");
     createClientExcel(getClientList("BAC","B03","B05","B06","B07"),"03");
     createClientExcel(getClientList("S7","B06"),"04");
     createClientExcel(getClientList("S7","B01","B02","B03","B04"),"05");
-    let wb = XLSX.utils.book_new();
+    let wbClient06 = XLSX.utils.book_new();
     let managementData = [];
     filteredObjects.filter(object=> object.dataType === "VT_BOOL" || object.dataType === "VT_I4").forEach(object=> {
         object.building = "other";
         object.subsystemType = "desigoCC";
         managementData.push(object);
     });
-    let data = XLSX.utils.json_to_sheet(managementData);
-    data["!autofilter"] = {ref: "A1:I9"};
-    XLSX.utils.book_append_sheet(wb,data, "Client06_Management");
-    XLSX.writeFile(wb,path.join( __dirname, '../public/client006.xlsx'));
+    let dataClient06 = XLSX.utils.json_to_sheet(managementData);
+    dataClient06["!autofilter"] = {ref: "A1:I9"};
+    XLSX.utils.book_append_sheet(wbClient06,dataClient06, "Client006_Management");
+    XLSX.writeFile(wbClient06,path.join( __dirname, '../public/client006.xlsx'));
+
+    let wbAlias = XLSX.utils.book_new();
     let aliasList = [];
     filteredObjects.forEach(object=>{
         aliasList.push({
-            name: "Alias",
-            value: object.alias
+            Alias: object.alias
         });
     });
     let alias = XLSX.utils.json_to_sheet(aliasList);
-    XLSX.utils.book_append_sheet(wb,alias, "AliasList");
-    XLSX.writeFile(wb,path.join( __dirname, '../public/alias_list.xlsx'));
+    XLSX.utils.book_append_sheet(wbAlias,alias, "AliasList");
+    XLSX.writeFile(wbAlias,path.join( __dirname, '../public/alias_list.xlsx'));
     importState = true;
 }
 

@@ -14,9 +14,10 @@ class REST_interface {
                 }
             )))
     }
+
     static getAliasList(){
         return new Promise(((resolve, reject) =>
-            axios.get(url + '/aliasList').then((res) => {
+            axios.get(url + '/aliasList',{responseType: 'arraybuffer'}).then((res) => {
                 resolve(
                     this.forceFileDownload(res,"alias_list")
                 );
@@ -28,7 +29,6 @@ class REST_interface {
 
     static getClientList(clientNumber) {
         return new Promise(((resolve, reject) =>
-
             axios.get(url + "downloadClientList", {params: {
                 clientNumber: clientNumber
                 },responseType: 'arraybuffer'}).then((res) => {
@@ -40,6 +40,7 @@ class REST_interface {
                 }
             )))
     }
+
     static forceFileDownload(response, fileName){
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a')

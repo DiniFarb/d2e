@@ -67,7 +67,7 @@
     >
       Alias list
     </v-btn>
-
+    <v-alert type="error" v-if="error">Something went wrong 😐 <br>{{error}}</v-alert>
   </v-container>
 </template>
 
@@ -79,21 +79,32 @@ export default {
 
   data() {
     return {
-      downloadActive: false
+      downloadActive: false,
+      error: ""
 
     }
   },
 
   methods: {
     async downloadClientList(clientNumber) {
-      this.downloadActive = true;
-      await REST_interface.getClientList(clientNumber);
-      this.downloadActive = false;
+      try {
+        this.downloadActive = true;
+        await REST_interface.getClientList(clientNumber);
+        this.downloadActive = false;
+      } catch (e) {
+        this.error = e.message;
+        this.downloadActive = false;
+      }
     },
     async downloadAliasList() {
+      try {
       this.downloadActive = true;
       await REST_interface.getAliasList();
       this.downloadActive = false;
+      } catch (e) {
+      this.error = e.message;
+      this.downloadActive = false;
+    }
     },
   },
 }

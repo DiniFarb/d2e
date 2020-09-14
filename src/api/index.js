@@ -3,16 +3,27 @@ const router = express.Router();
 const path = require('path');
 const {isImportDone, readDataFromExcelFile, getClientList, getDataSummary} = require('./excelDataHandler');
 const serverLog = require('../serverlog/serverlogger');
+require('dotenv').config();
 
+if(process.env.AUTOIMPORT){
+serverLog.info("Start auto import");
+try{
+    readDataFromExcelFile();
+} catch (err){
+    serverLog.error("Auto import: File read error: " + err.message);
+}
+} else {
+    serverLog.info("Auto import is disabled");
+}
 
 router.get('/', (req, res) => {
     res.json({
-        importState: isImportDone() === false ? "No data imported yet😕" : "Yay there is data🤩🦧",
+        importState: isImportDone(),
         summary: getDataSummary()
     });
 });
 
-//TODO Implement Auto import
+
 router.get('/import', (req, res,next ) => {
     serverLog.info("Import file from src directory");
     try{
@@ -51,7 +62,7 @@ router.get('/aliasList', (req, res,next ) => {
     );
     res.setHeader(
         "Content-Disposition",
-        "attachment; filename=" + "alias_list.xlsx"
+        "attachment; filename=alias_list.xlsx"
     );
 
     try{

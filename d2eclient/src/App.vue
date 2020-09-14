@@ -5,10 +5,9 @@
       <br>
       <router-view :state="state"></router-view>
       <div>
-        <v-alert class="error" v-if="error">Something went wrong 😐 <br>{{error}}</v-alert>
+        <v-alert type="error" v-if="error">Something went wrong 😐 <br>{{error}}</v-alert>
       </div>
     </v-container>
-
   </v-app>
 </template>
 <script>
