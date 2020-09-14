@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const serverLog = require('./serverlog/serverlogger');
 const app = require('./app');
 require('dotenv').config();

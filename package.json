@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "bin": {
+    "d2e": "./src/index.js"
+  },
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node server/index.js",
@@ -10,7 +13,7 @@
     "test": "mocha --exit"
   },
   "keywords": [],
-  "author": "",
+  "author": "Andreas Vogt",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
@@ -31,5 +34,8 @@
     "nodemon": "^2.0.4",
     "supertest": "^4.0.2",
     "vue-cli-plugin-vuetify": "~2.0.7"
+  },
+  "pkg": {
+    "assets": ["./src/public/*","./src/import/*","./src/configfiles/*"]
   }
 }
