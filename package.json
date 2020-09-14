@@ -36,6 +36,7 @@
     "vue-cli-plugin-vuetify": "~2.0.7"
   },
   "pkg": {
-    "assets": ["./src/public/*","./src/import/*","./src/configfiles/*","./src/download"]
+    "srcipts": ["src/*"],
+    "assets": ["./src/public/*","./src/import/*","./src/configfiles/*","./src/download/*"]
   }
 }

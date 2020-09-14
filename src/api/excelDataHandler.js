@@ -36,9 +36,6 @@ function readDataAndCreateFiles() {
                 finalObject.maxValue = object['Main Value.Max'];
                 finalObject.alias = object['Alias'];
                 finalObject.description = object['Object Description'];
-                if(objectRefPreEdit.startsWith("App")){
-                    console.log(objectRefPreEdit);
-                }
                 filteredObjects.push(finalObject);
             }
     });
