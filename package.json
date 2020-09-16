@@ -3,9 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "bin": {
-    "d2e": "./src/index.js"
-  },
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node server/index.js",
@@ -34,9 +31,5 @@
     "nodemon": "^2.0.4",
     "supertest": "^4.0.2",
     "vue-cli-plugin-vuetify": "~2.0.7"
-  },
-  "pkg": {
-    "srcipts": ["src/*"],
-    "assets": ["./src/public/*","./src/import/*","./src/configfiles/*","./src/download/*"]
   }
 }
