@@ -14,7 +14,7 @@ function readDataAndCreateFiles() {
     let sheet_name_list = workbook.SheetNames;
     //just make sure objects lists are is empty by reimport
     deleteData();
-    browserObjects = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]], {defval: ""});
+    browserObjects = XLSX.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]], {defval: "", range: 2});
     summary = {
         objectsTotal: browserObjects.length,
         objectsWithAlias: browserObjects.filter(object=> object['Alias'] !== "").length,
