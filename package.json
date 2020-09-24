@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "start": "node server/index.js",
+    "installServcie": "node ./windows/installAsService.js",
+    "deinstallServcie": "node ./windows/deinstallService.js",
+    "start": "node src/index.js",
     "lint": "eslint --fix src",
     "test": "mocha --exit"
   },
@@ -19,6 +21,7 @@
     "express": "^4.17.1",
     "helmet": "^4.1.0",
     "morgan": "^1.10.0",
+    "node-windows": "^1.0.0-beta.5",
     "read-excel-file": "^4.0.7",
     "winston": "^3.3.3",
     "xlsx": "^0.16.6"
