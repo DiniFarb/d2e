@@ -1,3 +1,4 @@
+const e = require('express');
 const path = require('path');
 const XLSX = require('xlsx');
 const { getNotAllowedStrings, getObjectModelsAndTypes } = require('../importedFilterConfig');
@@ -129,17 +130,19 @@ function deleteData() {
 
 function updateObjectModelSummary(object) {
     //create list if it does not exist
-    if (summary.objectModels.legth === 0) {
-        objectModelsAndTypes.forEach(item => {
+    let models = getObjectModelsAndTypes();
+    if (summary.objectModels.length === 0) {
+        models.forEach(item => {
             summary.objectModels.push({
-                model: objectModelsAndTypes.objectModel,
+                model: item.objectModel,
                 amount: 0,
             });
-        })
+        });
+        console.log(summary.objectModels.length);
     }
     for (var i in summary.objectModels) {
         if (summary.objectModels[i].model === object['Object Model']) {
-            value[i].amout = value.amout + 1;
+            summary.objectModels[i].amount = summary.objectModels[i].amount + 1;
             break;
         }
     }
