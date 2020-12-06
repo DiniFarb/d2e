@@ -1,41 +1,40 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
-const {isImportDone, readDataFromExcelFile, getClientList, getDataSummary} = require('./excelDataHandler');
+const { isImportDone, readDataFromExcelFile, getClientList, getDataSummary } = require('./excelDataHandler');
 const serverLog = require('../serverlog/serverlogger');
 require('dotenv').config();
 
-if(process.env.AUTOIMPORT){
-serverLog.info("Start auto import");
-try{
-    readDataFromExcelFile();
-} catch (err){
-    serverLog.error("Auto import: File read error: " + err.message);
-}
+if (process.env.AUTOIMPORT) {
+    serverLog.info("Start auto import");
+    try {
+        readDataFromExcelFile();
+    } catch (err) {
+        serverLog.error("Auto import: File read error: " + err.message);
+    }
 } else {
     serverLog.info("Auto import is disabled");
 }
 
-router.get('/', (req, res) => {
+router.get('/', async(req, res) => {
     res.json({
-        importState: isImportDone(),
-        summary: getDataSummary()
+        summary: await getDataSummary()
     });
 });
 
 
-router.get('/import', (req, res,next ) => {
+router.get('/import', (req, res, next) => {
     serverLog.info("Import file from src directory");
-    try{
+    try {
         readDataFromExcelFile();
         res.status(200).send("Import done and client files created");
-    } catch (err){
+    } catch (err) {
         serverLog.error("File read error: " + err.message);
         next(err);
     }
 });
 
-router.get('/downloadClientList', (req, res,next ) => {
+router.get('/downloadClientList', (req, res, next) => {
     serverLog.info("Get client list client " + JSON.stringify(req.query.clientNumber));
     res.setHeader(
         "Content-Type",
@@ -46,15 +45,15 @@ router.get('/downloadClientList', (req, res,next ) => {
         "attachment; filename=" + 'client' + req.query.clientNumber + ".xlsx"
     );
 
-    try{
+    try {
         res.download(path.join(__dirname, '../download/client' + req.query.clientNumber + ".xlsx"));
-    } catch (err){
+    } catch (err) {
         serverLog.error("download error: " + err.message);
         next(err);
     }
 });
 
-router.get('/aliasList', (req, res,next ) => {
+router.get('/aliasList', (req, res, next) => {
     serverLog.info("Get alias list ");
     res.setHeader(
         "Content-Type",
@@ -65,9 +64,9 @@ router.get('/aliasList', (req, res,next ) => {
         "attachment; filename=alias_list.xlsx"
     );
 
-    try{
+    try {
         res.download(path.join(__dirname, '../download/alias_list.xlsx'));
-    } catch (err){
+    } catch (err) {
         serverLog.error("download error: " + err.message);
         next(err);
     }

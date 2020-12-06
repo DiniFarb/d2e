@@ -1,51 +1,53 @@
 <template>
   <v-container >
+    <v-overlay
+        :value="importingActive"
+    >
+      <v-progress-circular
+          size="128"
+          indeterminate
+      >
+
+      </v-progress-circular>
+    </v-overlay>
     <h1 class="OVTitle">Overview</h1>
-    <v-card v-if="importState" class="pa-1 overview">
-      <v-alert dense class="text--accent-1 ma-2" type="success">Last import at <span class="lastImport">{{this.lastImport}}</span></v-alert>
-      <v-card-text>
-            <div>Total tags in scope</div>
-            <p class="display-1 text--primary">
-              {{this.dash.summary.validObjects}}
-            </p>
-        <div class="pieChartSubSystem"></div>
-        <v-row
-            justify="center" >
-          <v-col cols="3">
-            <div>S7 tags</div>
-            <p class="display-1 text--primary">
-              {{this.dash.summary.S7Values}}
-            </p>
-          </v-col>
-          <v-col cols="3">
-            <div>BAC tags</div>
-            <p class="display-1 text--primary">
-              {{this.dash.summary.BACValues}}
-            </p>
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-        <div>Analog tags</div>
-        <p class="display-1 text--primary">
-          {{this.dash.summary.analogValues}}
-        </p>
-          </v-col>
-          <v-col>
-        <div>Binary tags</div>
-        <p class="display-1 text--primary">
-          {{this.dash.summary.binaryValues}}
-        </p>
-          </v-col>
-          <v-col>
-            <div>Desigo server tags</div>
-            <p class="display-1 text--primary">
-              {{this.dash.summary.desigoCCValues}}
-            </p>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
+    <v-btn @click="startImport()" >Import data </v-btn>
+     <v-timeline :dense="$vuetify.breakpoint.smAndDown" >
+      <v-timeline-item
+      v-for="(timeline, i) in timeline"
+      :key="i"
+      small
+    
+      >
+      <template v-slot:opposite>
+        <span
+          :class="`headline font-weight-bold blue--text`"
+          v-text="timeline.value.imported_at"
+        ></span>
+      </template>
+      <div class="py-4">
+        <v-card class="grey lighten-1 justify-end">
+          <v-card-title :class="`headline font-weight-light mb-4 blue--text`">
+              Details
+          </v-card-title>
+          <v-simple-table dark>
+          <template v-slot:default >
+            <tbody>
+              <tr>
+                <td>Total imported Objects</td>
+                <td>{{ timeline.value.objectsTotal }}</td>
+              </tr>
+              <tr>
+                <td>Total valid Objects</td>
+                <td>{{ timeline.value.validObjects }}</td>
+              </tr>
+            </tbody>
+          </template>
+  </v-simple-table>
+        </v-card>
+      </div>
+    </v-timeline-item>
+     </v-timeline>
     <v-alert v-if="!importState" class="error">No data import yet 😥 ... <br>Ask siemens for help🧠</v-alert>
   </v-container>
 </template>
@@ -58,11 +60,13 @@ export default {
 
   data() {
     return {
-      dash: "",
-      lastImport: "",
-      importState: false
+      importingActive: false,
+      error: "",
+      importState: true,
+      timeline: [],
     }
   },
+
   mounted() {
    this.getOverview();
   },
@@ -70,17 +74,40 @@ export default {
   methods: {
     async getOverview() {
       try {
-        this.dash = await REST_interface.getState();
-        this.lastImport = this.parseDate(this.dash.summary.updated_at);
-        this.importState = this.dash.importState;
+        this.importingActive = true;
+        await REST_interface.getState().then(res=>{
+          if(res.summary.length > 0){
+           res.summary.forEach(item =>{
+             item.value.imported_at = this.parseDate(item.value.imported_at);
+           })    
+          this.timeline = res.summary;
+          } else{
+            this.importState = false
+          }
+        });
+        this.importingActive = false;
       } catch (e) {
         this.importState = false
+        this.importingActive = false;
+        this.error = e.message;
       }
-
     },
 
     parseDate(date){
-    return new Date(date).toDateString();
+     let viewDate = new Date(date)
+    return viewDate.toDateString() + " " + viewDate.toLocaleTimeString();
+    },
+
+    async startImport(){
+      try{
+         this.importingActive = true;
+         await REST_interface.importExcel();
+         await this.getOverview();
+         this.importingActive = false;
+      } catch (e){
+        this.importingActive = false;
+        this.error = e.message;
+      }
     }
   }
 }

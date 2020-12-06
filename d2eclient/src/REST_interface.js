@@ -3,45 +3,56 @@ const url = 'api/v1/';
 
 class REST_interface {
 
-    static getState(){
+    static getState() {
         return new Promise(((resolve, reject) =>
             axios.get(url).then((res) => {
                 resolve(
                     res.data
                 );
             }).catch((err) => {
-                    reject(err);
-                }
-            )))
+                reject(err);
+            })))
     }
 
-    static getAliasList(){
+    static importExcel() {
         return new Promise(((resolve, reject) =>
-            axios.get(url + '/aliasList',{responseType: 'arraybuffer'}).then((res) => {
+            axios.get(url + '/import').then((res) => {
                 resolve(
-                    this.forceFileDownload(res,"alias_list")
+                    res.data
                 );
             }).catch((err) => {
-                    reject(err);
-                }
-            )))
+                reject(err);
+            })))
+    }
+
+    static getAliasList() {
+        return new Promise(((resolve, reject) =>
+            axios.get(url + '/aliasList', { responseType: 'arraybuffer' }).then((res) => {
+                resolve(
+                    this.forceFileDownload(res, "alias_list")
+                );
+            }).catch((err) => {
+                reject(err);
+            })))
     }
 
     static getClientList(clientNumber) {
         return new Promise(((resolve, reject) =>
-            axios.get(url + "downloadClientList", {params: {
-                clientNumber: clientNumber
-                },responseType: 'arraybuffer'}).then((res) => {
+            axios.get(url + "downloadClientList", {
+                params: {
+                    clientNumber: clientNumber
+                },
+                responseType: 'arraybuffer'
+            }).then((res) => {
                 resolve(
-                    this.forceFileDownload(res, 'client'+ clientNumber)
+                    this.forceFileDownload(res, 'client' + clientNumber)
                 );
             }).catch((err) => {
-                    reject(err);
-                }
-            )))
+                reject(err);
+            })))
     }
 
-    static forceFileDownload(response, fileName){
+    static forceFileDownload(response, fileName) {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a')
         link.href = url

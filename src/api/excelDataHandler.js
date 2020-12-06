@@ -1,15 +1,20 @@
-const e = require('express');
 const path = require('path');
 const XLSX = require('xlsx');
+const persistStorage = require('node-persist');
+const summaryTimeline = persistStorage.create({ dir: './storage/importTimeline' });
 const { getNotAllowedStrings, getObjectModelsAndTypes } = require('../importedFilterConfig');
 let browserObjects = [];
 let filteredObjects = [];
 let summary = {};
-let importState = false;
+const models = getObjectModelsAndTypes();
 
+try {
+    initializeStorage()
+} catch (e) {
+    throw new Error('Initialze of timeline storage failed: ' + e);
+}
 
 function readDataAndCreateFiles() {
-    let objectModelsAndTypes = getObjectModelsAndTypes();
     let notAllowedStrings = getNotAllowedStrings();
     let workbook = XLSX.readFile(path.join(__dirname, '../import/' + process.env.FILE));
     let sheet_name_list = workbook.SheetNames;
@@ -20,19 +25,19 @@ function readDataAndCreateFiles() {
         objectModels: [],
         objectsTotal: browserObjects.length,
         objectsWithAlias: browserObjects.filter(object => object['Alias'] !== "").length,
-        objectsMatchObjectModels: browserObjects.filter(object => objectModelsAndTypes.map(({ objectModel }) => objectModel).includes(object['Object Model'])).length,
+        objectsMatchObjectModels: browserObjects.filter(object => models.map(({ objectModel }) => objectModel).includes(object['Object Model'])).length,
         objectsMatchNotAllowedStrings: browserObjects.filter(object => !checkIfItsAnAllowedStringValue(object, notAllowedStrings)).length,
-        updated_at: new Date()
+        imported_at: new Date()
     };
     browserObjects.forEach(object => {
-        if (object['Alias'] !== "" && objectModelsAndTypes.map(({ objectModel }) => objectModel).includes(object['Object Model']) &&
+        if (object['Alias'] !== "" && models.map(({ objectModel }) => objectModel).includes(object['Object Model']) &&
             checkIfItsAnAllowedStringValue(object, notAllowedStrings)) {
             let finalObject = {};
             let objectRefPreEdit = object['Object Designation [System1.Management View]'].replace(/System1.ManagementView:|System1.ApplicationView:/g, "");
             finalObject.building = objectRefPreEdit.slice(39, 42);
-            finalObject.opcTag = objectRefPreEdit + "." + objectModelsAndTypes.find(item => item.objectModel === object['Object Model']).readProperty;
+            finalObject.opcTag = objectRefPreEdit + "." + models.find(item => item.objectModel === object['Object Model']).readProperty;
             finalObject.subsystemType = objectRefPreEdit.slice(43, 46).replace(".", "");
-            finalObject.dataType = objectModelsAndTypes.find(item => item.objectModel === object['Object Model']).dataType;
+            finalObject.dataType = models.find(item => item.objectModel === object['Object Model']).dataType;
             finalObject.unit = object['Main Value.Unit'];
             finalObject.minValue = object['Main Value.Min'];
             finalObject.maxValue = object['Main Value.Max'];
@@ -48,7 +53,6 @@ function readDataAndCreateFiles() {
     summary.desigoCCValues = filteredObjects.filter(object => object.dataType === "VT_BOOL" || object.dataType === "VT_I4").length;
     summary.S7Values = filteredObjects.filter(object => object.subsystemType === "S7").length;
     summary.BACValues = filteredObjects.filter(object => object.subsystemType === "BAC").length;
-
     createClientExcel(getClientList("BAC", "B01"), "01");
     createClientExcel(getClientList("BAC", "B02"), "02");
     createClientExcel(getClientList("BAC", "B03", "B05", "B06", "B07"), "03");
@@ -65,7 +69,6 @@ function readDataAndCreateFiles() {
     dataClient06["!autofilter"] = { ref: "A1:I9" };
     XLSX.utils.book_append_sheet(wbClient06, dataClient06, "Client006_Management");
     XLSX.writeFile(wbClient06, path.join(__dirname, '../download/client006.xlsx'));
-
     let wbAlias = XLSX.utils.book_new();
     let aliasList = [];
     filteredObjects.forEach(object => {
@@ -76,7 +79,9 @@ function readDataAndCreateFiles() {
     let alias = XLSX.utils.json_to_sheet(aliasList);
     XLSX.utils.book_append_sheet(wbAlias, alias, "AliasList");
     XLSX.writeFile(wbAlias, path.join(__dirname, '../download/alias_list.xlsx'));
-    importState = true;
+    summaryTimeline.setItem(summary.imported_at.toUTCString(), summary).then(() => {}).catch(e => {
+        throw new Error("Timeline storage failed: " + e);
+    });
 }
 
 function getClientList(subsystemType, buildingOption1, buildingOption2, buildingOption3, buildingOption4) {
@@ -101,8 +106,16 @@ function createClientExcel(data, clientNumber) {
     XLSX.writeFile(wb, path.join(__dirname, '../download/client0' + clientNumber + '.xlsx'));
 }
 
-function getDataSummary() {
-    return summary;
+async function getDataSummary() {
+    let timeline = [];
+    await summaryTimeline.forEach(item => {
+        timeline.push(item);
+    });
+    return timeline;
+}
+
+async function initializeStorage() {
+    await summaryTimeline.init();
 }
 
 function checkIfItsAnAllowedStringValue(object, notAllowedStrings) {
@@ -117,10 +130,6 @@ function checkIfItsAnAllowedStringValue(object, notAllowedStrings) {
     return callback;
 }
 
-function isImportDone() {
-    return importState
-}
-
 function deleteData() {
     browserObjects = [];
     filteredObjects = [];
@@ -130,7 +139,6 @@ function deleteData() {
 
 function updateObjectModelSummary(object) {
     //create list if it does not exist
-    let models = getObjectModelsAndTypes();
     if (summary.objectModels.length === 0) {
         models.forEach(item => {
             summary.objectModels.push({
@@ -138,7 +146,6 @@ function updateObjectModelSummary(object) {
                 amount: 0,
             });
         });
-        console.log(summary.objectModels.length);
     }
     for (var i in summary.objectModels) {
         if (summary.objectModels[i].model === object['Object Model']) {
@@ -149,7 +156,6 @@ function updateObjectModelSummary(object) {
 }
 
 module.exports = {
-    isImportDone,
     readDataFromExcelFile: readDataAndCreateFiles,
     getClientList,
     getDataSummary
