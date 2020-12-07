@@ -25,12 +25,16 @@
           v-text="timeline.value.imported_at"
         ></span>
       </template>
-      <div class="py-4">
-        <v-card class="grey lighten-1 justify-end">
-          <v-card-title :class="`headline font-weight-light mb-4 blue--text`">
+      <div class="py-8">
+          <div class="ma-2 float-right" >
+            <v-btn
+              dark
+              @click="setSheetValue(timeline.value)"
+            >
               Details
-          </v-card-title>
-          <v-simple-table dark>
+            </v-btn>
+            </div>
+          <v-simple-table dark disabled>
           <template v-slot:default >
             <tbody>
               <tr>
@@ -43,12 +47,40 @@
               </tr>
             </tbody>
           </template>
-  </v-simple-table>
-        </v-card>
+        </v-simple-table>
       </div>
     </v-timeline-item>
      </v-timeline>
     <v-alert v-if="!importState" class="error">No data import yet 😥 ... <br>Ask siemens for help🧠</v-alert>
+    <div class="text-center">
+    <v-bottom-sheet v-model="sheet" inset>
+      <v-sheet class="text-center" height="500px">
+        <v-btn
+          class="mt-6"
+          text
+          color="error"
+          @click="sheet = !sheet"
+        >close</v-btn>
+        <div class="my-3">
+            <v-simple-table>
+          <template v-slot:default >
+            <p>Imoprt from: {{sheetItem.imported_at}}</p>
+            <tbody>
+              <tr>
+                <td>Total imported Objects</td>
+                <td>{{ sheetItem.objectsTotal }}</td>
+              </tr>
+              <tr>
+                <td>Total valid Objects</td>
+                <td>{{ sheetItem.validObjects }}</td>
+              </tr>
+            </tbody>
+          </template>
+        </v-simple-table>
+        </div>
+      </v-sheet>
+    </v-bottom-sheet>
+  </div>
   </v-container>
 </template>
 
@@ -64,6 +96,8 @@ export default {
       error: "",
       importState: true,
       timeline: [],
+      sheet: false,
+      sheetItem: {},
     }
   },
 
@@ -108,6 +142,11 @@ export default {
         this.importingActive = false;
         this.error = e.message;
       }
+    },
+
+    setSheetValue(item){
+      this.sheet = true;
+      this.sheetItem = item;
     }
   }
 }
