@@ -26,14 +26,6 @@
         ></span>
       </template>
       <div class="py-8">
-          <div class="ma-2 float-right" >
-            <v-btn
-              dark
-              @click="setSheetValue(timeline.value)"
-            >
-              Details
-            </v-btn>
-            </div>
           <v-simple-table dark disabled>
           <template v-slot:default >
             <tbody>
@@ -41,8 +33,8 @@
                 <td>Total imported Objects</td>
                 <td>{{ timeline.value.objectsTotal }}</td>
               </tr>
-              <tr>
-                <td>Total valid Objects</td>
+              <tr @click="setSheetValue(timeline.value)">
+                <td>Total valid Items</td>
                 <td>{{ timeline.value.validObjects }}</td>
               </tr>
             </tbody>
@@ -64,15 +56,18 @@
         <div class="my-3">
             <v-simple-table>
           <template v-slot:default >
-            <p>Imoprt from: {{sheetItem.imported_at}}</p>
             <tbody>
               <tr>
-                <td>Total imported Objects</td>
-                <td>{{ sheetItem.objectsTotal }}</td>
+                <td>S7 Items</td>
+                <td>{{ sheetItem.S7Values }}</td>
               </tr>
               <tr>
-                <td>Total valid Objects</td>
-                <td>{{ sheetItem.validObjects }}</td>
+                <td>BACnet Items</td>
+                <td>{{ sheetItem.BACValues}}</td>
+              </tr>
+              <tr>
+                <td>DesigoCC Items</td>
+                <td>{{ sheetItem.desigoCCValues}}</td>
               </tr>
             </tbody>
           </template>
@@ -118,6 +113,9 @@ export default {
           } else{
             this.importState = false
           }
+          this.timeline.sort(function(a,b){
+            return new Date(b.key) - new Date(a.key);
+          });
         });
         this.importingActive = false;
       } catch (e) {
@@ -143,7 +141,6 @@ export default {
         this.error = e.message;
       }
     },
-
     setSheetValue(item){
       this.sheet = true;
       this.sheetItem = item;
