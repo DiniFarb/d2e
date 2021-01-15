@@ -147,12 +147,8 @@ function updateObjectModelSummary(models, object) {
     }
 }
 
-async function getData() {
-    let timeline = [];
-    await objectTimeline.forEach(item => {
-        timeline.push(item);
-    });
-    return timeline;
+async function getData(key) {
+    return await objectTimeline.get(key)
 }
 
 async function getSumData() {

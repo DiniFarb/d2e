@@ -23,6 +23,14 @@ router.get('/', async(req, res) => {
     });
 });
 
+router.get('/impData', async(req, res) => {
+    serverLog.info("Get datails for import " + req.query.key);
+    let data = await getData(req.query.key);
+    console.log(data)
+    res.send(
+        data[0].value.filteredObjects
+    );
+});
 
 router.get('/import', (req, res, next) => {
     serverLog.info("Import file from src directory");

@@ -71,7 +71,6 @@ export default {
         this.loading = true;
         
         await REST_interface.getState().then(res=>{
-          console.log(res);
           if(res.data.length > 0){
               this.items = res.data 
               this.items.sort(function(a,b){

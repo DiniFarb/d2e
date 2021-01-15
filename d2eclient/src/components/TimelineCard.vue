@@ -15,13 +15,14 @@
           <v-btn
           class="ma-1"
              outlined
+             @click="detailView = true"
              >
             Details
           </v-btn>
         </v-card-title>
         <v-row class="ma-1 ">
             <v-col>
-                <h2>
+                <h2 class="title">
                     Imported objects 
                     <v-chip
                     label
@@ -30,7 +31,7 @@
                 </h2>
             </v-col>
             <v-col>
-                 <h2>
+                 <h2 class="title">
                     Valid objects 
                     <v-chip
                     label
@@ -39,18 +40,34 @@
                 </h2>
             </v-col>
         </v-row>
+        <v-dialog
+            v-if="detailView"
+            v-model="detailView"
+            >
+            <TimelineCardDetails 
+            :id="item.imported_at"
+            @close-details="detailView = false"
+             />
+       </v-dialog>
       </v-card>
 </template>
 <script>
+import TimelineCardDetails from '../components/TimeLineCardDetails';
+
 export default {
     name:"TimelineCard",
     props:{
         data:Object,
         color:String,
     },
+    components:{
+        TimelineCardDetails
+     },
     data() {
         return {
             item: this.data,
+            detailView: false,
+            exportView:false,
         }
     },
     methods:{
