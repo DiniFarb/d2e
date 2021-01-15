@@ -4,9 +4,9 @@ const path = require('path');
 const { isImportDone, readDataFromExcelFile, getClientList, getDataSummary } = require('./excelDataHandler');
 const serverLog = require('../serverlog/serverlogger');
 require('dotenv').config();
-
-if (process.env.AUTOIMPORT) {
-    serverLog.info("Start auto import");
+console.log(process.env.AUTOIMPORT);
+if (process.env.AUTOIMPORT === "YES") {
+    serverLog.info("Start auto import ");
     try {
         readDataFromExcelFile();
     } catch (err) {

@@ -52,7 +52,11 @@
      </v-timeline>
     <v-alert v-if="!importState" class="error">No data import yet 😥 ... <br>Ask siemens for help🧠</v-alert>
     <div class="text-center">
-    <v-bottom-sheet v-model="sheet" inset>
+    <v-dialog 
+    v-model="sheet" 
+    class="pa-4"
+    v-if="sheet"
+    >
       <div>
       <v-sheet 
       class="text-center blue-grey darken-4"
@@ -128,7 +132,7 @@
         </div>
       </v-sheet>
       </div>
-    </v-bottom-sheet>
+    </v-dialog>
   </div>
   </v-container>
 </template>
