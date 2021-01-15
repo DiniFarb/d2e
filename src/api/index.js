@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
-const { isImportDone, readDataFromExcelFile, getClientList, getDataSummary } = require('./excelDataHandler');
+const { readData, createOPCfiles, getData, getSumData } = require('./excelDataHandler');
 const serverLog = require('../serverlog/serverlogger');
 require('dotenv').config();
 console.log(process.env.AUTOIMPORT);
 if (process.env.AUTOIMPORT === "YES") {
     serverLog.info("Start auto import ");
     try {
-        readDataFromExcelFile();
+        readData();
     } catch (err) {
         serverLog.error("Auto import: File read error: " + err.message);
     }
@@ -17,8 +17,9 @@ if (process.env.AUTOIMPORT === "YES") {
 }
 
 router.get('/', async(req, res) => {
-    res.json({
-        summary: await getDataSummary()
+    let data = await getSumData();
+    res.send({
+        data
     });
 });
 
@@ -26,7 +27,18 @@ router.get('/', async(req, res) => {
 router.get('/import', (req, res, next) => {
     serverLog.info("Import file from src directory");
     try {
-        readDataFromExcelFile();
+        readData();
+        res.status(200).send("Import done and client files created");
+    } catch (err) {
+        serverLog.error("Import error: " + err.message);
+        next(err);
+    }
+});
+
+router.get('/createOPCfiles', (req, res, next) => {
+    serverLog.info("create files for import " + req.body.fileName);
+    try {
+        createOPCfiles(req.body.fileName);
         res.status(200).send("Import done and client files created");
     } catch (err) {
         serverLog.error("File read error: " + err.message);

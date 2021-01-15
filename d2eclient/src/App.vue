@@ -1,35 +1,12 @@
 <template>
   <v-app id="app">
-    <AppBar></AppBar>
-    <v-container>
-      <br>
-      <router-view :state="state"></router-view>
-      <div>
-        <v-alert type="error" v-if="error">Something went wrong 😐 <br>{{error}}</v-alert>
-      </div>
-    </v-container>
+    <router-view></router-view>
   </v-app>
 </template>
 <script>
-import AppBar from '@/views/AppBar';
-import REST_interface from './REST_interface'
+
 export default {
-  components: {
-    AppBar: AppBar
-  },
-  data() {
-    return {
-      state: [],
-      error: '',
-    }
-  },
-  async created() {
-    try {
-      this.state = await REST_interface.getState();
-    } catch (e) {
-      this.error = e.message;
-    }
-  },
+ 
 }
 </script>
 <style lang="scss">
