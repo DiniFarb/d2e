@@ -45,14 +45,14 @@
             v-model="detailView"
             >
             <TimelineCardDetails 
-            :id="item.imported_at"
+            :data="item"
             @close-details="detailView = false"
              />
        </v-dialog>
       </v-card>
 </template>
 <script>
-import TimelineCardDetails from '../components/TimeLineCardDetails';
+import TimelineCardDetails from '../components/TimelineCardDetails';
 
 export default {
     name:"TimelineCard",
