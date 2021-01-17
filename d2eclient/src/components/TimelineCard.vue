@@ -24,19 +24,19 @@
             <v-col>
                 <h2 class="title">
                     Imported objects 
-                    <v-chip
-                    label
+                    <v-btn
                     class="accent"
-                    >{{item.objectsTotal}}</v-chip>
+                    @click="listViewIO = true"
+                    >{{item.objectsTotal}}</v-btn>
                 </h2>
             </v-col>
             <v-col>
                  <h2 class="title">
                     Valid objects 
-                    <v-chip
-                    label
+                    <v-btn
                     class="success"
-                    >{{item.validObjects}}</v-chip>
+                    @click="listViewVO = true"
+                    >{{item.validObjects}}</v-btn>
                 </h2>
             </v-col>
         </v-row>
@@ -61,11 +61,34 @@
             @close-download="exportView = false"
              />
        </v-dialog>
+       <v-dialog
+            v-if="listViewVO"
+            v-model="listViewVO"
+            max-width="80%"
+            >
+            <ObjectsList
+            :listType="'filteredObjects'"
+            :id="data.imported_at" 
+            @close-download="listViewVO = false"
+             />
+       </v-dialog>
+       <v-dialog
+            v-if="listViewIO"
+            v-model="listViewIO"
+            max-width="80%"
+            >
+            <ObjectsList
+            :listType="'browserObjects'"
+            :id="data.imported_at" 
+            @close-download="listViewIO = false"
+             />
+       </v-dialog>
       </div>
 </template>
 <script>
 import TimelineCardDetails from '../components/TimelineCardDetails';
 import Download from '../components/Download'
+import ObjectsList from '../components/ObjectsList'
 
 export default {
     name:"TimelineCard",
@@ -75,13 +98,16 @@ export default {
     },
     components:{
         TimelineCardDetails,
-        Download
+        Download,
+        ObjectsList
      },
     data() {
         return {
             item: this.data,
             detailView: false,
             exportView:false,
+            listViewVO:false,
+            listViewIO:false,
         }
     },
     methods:{

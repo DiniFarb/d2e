@@ -23,15 +23,17 @@
 import REST_interface from "@/REST_interface.js"
 
 export default {
-    name:"ValidObjectsList",
+    name:"ObjectsList",
     props:{
         id:String,
+        listType:String,
     },
     data(){
         return{
             key: this.id,
             loading: false,
             data: [],
+            type:this.listType,
             error:"",
             search: '',
             headers: [
@@ -88,7 +90,8 @@ export default {
         this.loading = true
         await REST_interface.getImp(this.key.toString()).then(
             res=>{
-              this.data = res
+                console.log(this.type)
+              this.data = res[this.type]
               this.loading = false  
             }
         ).catch(

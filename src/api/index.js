@@ -27,7 +27,7 @@ router.get('/impData', async(req, res) => {
     serverLog.info("Get datails for import " + req.query.key);
     await getData(req.query.key).then(data => {
         res.json(
-            data.filteredObjects
+            data
         );
     }).catch(err => {
         res.status(500).send({ message: "Can't load data: " + err });
