@@ -1,4 +1,5 @@
 <template>
+    <div>
     <v-card
         dark
       >
@@ -7,14 +8,13 @@
         >{{parseDate(data.imported_at)}}
              <v-spacer></v-spacer>
              <v-btn
-             class="ma-1"
-             outlined
+             class="ma-1 accent"
+             @click="exportView = true"
              >
             Export
           </v-btn>
           <v-btn
-          class="ma-1"
-             outlined
+             class="ma-1 accent"
              @click="detailView = true"
              >
             Details
@@ -40,19 +40,32 @@
                 </h2>
             </v-col>
         </v-row>
-        <v-dialog
+      </v-card>
+      <v-dialog
             v-if="detailView"
             v-model="detailView"
+            max-width="80%"
             >
             <TimelineCardDetails 
             :data="item"
             @close-details="detailView = false"
              />
        </v-dialog>
-      </v-card>
+       <v-dialog
+            v-if="exportView"
+            v-model="exportView"
+            max-width="80%"
+            >
+            <Download
+            :filekey="data.imported_at" 
+            @close-download="exportView = false"
+             />
+       </v-dialog>
+      </div>
 </template>
 <script>
 import TimelineCardDetails from '../components/TimelineCardDetails';
+import Download from '../components/Download'
 
 export default {
     name:"TimelineCard",
@@ -61,7 +74,8 @@ export default {
         color:String,
     },
     components:{
-        TimelineCardDetails
+        TimelineCardDetails,
+        Download
      },
     data() {
         return {

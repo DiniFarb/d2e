@@ -29,6 +29,21 @@ class REST_interface {
             })))
     }
 
+    static createOPCfiles(key) {
+        return new Promise(((resolve, reject) =>
+            axios.get(url + '/createOPCfiles', {
+                params: {
+                    key: key
+                },
+            }).then((res) => {
+                resolve(
+                    res.data
+                );
+            }).catch((err) => {
+                reject(err);
+            })))
+    }
+
     static importExcel() {
         return new Promise(((resolve, reject) =>
             axios.get(url + '/import').then((res) => {

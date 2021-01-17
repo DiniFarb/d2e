@@ -34,10 +34,10 @@ router.get('/impData', async(req, res) => {
     })
 });
 
-router.get('/import', (req, res, next) => {
+router.get('/import', async(req, res, next) => {
     serverLog.info("Import file from src directory");
     try {
-        readData();
+        await readData();
         res.status(200).send("Import done and client files created");
     } catch (err) {
         serverLog.error("Import error: " + err.message);
@@ -45,10 +45,10 @@ router.get('/import', (req, res, next) => {
     }
 });
 
-router.get('/createOPCfiles', (req, res, next) => {
-    serverLog.info("create files for import " + req.body.fileName);
+router.get('/createOPCfiles', async(req, res, next) => {
+    serverLog.info("create files for import " + req.query.key);
     try {
-        createOPCfiles(req.body.fileName);
+        await createOPCfiles(req.query.key);
         res.status(200).send("Import done and client files created");
     } catch (err) {
         serverLog.error("File read error: " + err.message);

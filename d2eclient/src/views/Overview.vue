@@ -72,8 +72,7 @@ export default {
         
         await REST_interface.getState().then(res=>{
           if(res.data.length > 0){
-              this.items = res.data 
-              this.items.sort(function(a,b){
+              this.items = res.data.sort(function(a,b){
               return new Date(b.imported_at) - new Date(a.imported_at);
               });
           } else{

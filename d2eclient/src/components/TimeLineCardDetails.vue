@@ -1,8 +1,17 @@
 <template>
-    <v-row>
-        <v-col>
+  <v-card 
+    class="grey darken">
+    <v-card-title
+    class="accent"
+    >Details of valid objects: <strong> {{item.validObjects}} </strong>
+    <v-spacer></v-spacer>
+    <v-btn
+    @click="close"
+    >close</v-btn>    
+    </v-card-title>
+    <v-row class="ma-1 justify-center" >
+       <v-col cols=10 sm=2>
        <v-card 
-                max-width="200px"
                 elevation="2" 
                 class="ma-1 secondary"
                 >
@@ -21,8 +30,8 @@
               <v-card-text class="title">{{data.BACValues}}</v-card-text>
         </v-card>
         </v-col>
-         <v-col>
-       <v-card  max-width="200px"
+         <v-col cols=10 sm=2>
+       <v-card  
                 elevation="2" 
                 class="ma-1 secondary"
                 >
@@ -41,8 +50,8 @@
               <v-card-text class="title">{{data.S7Values}}</v-card-text>
         </v-card>
         </v-col>
-         <v-col>
-       <v-card  max-width="200px"
+         <v-col cols=10 sm=2>
+       <v-card 
                 elevation="2" 
                 class="ma-1 secondary"
                 >
@@ -61,7 +70,48 @@
               <v-card-text class="title">{{data.desigoCCValues}}</v-card-text>
         </v-card>
         </v-col>
+          <v-col cols=10 sm=2>
+       <v-card 
+                elevation="2" 
+                class="ma-1 grey darken-2"
+                >
+              <v-card-title class="title justify-center" > Analog
+              </v-card-title>
+              <v-progress-circular
+                class="mb-6"
+                :rotate="360"
+                :size="100"
+                :width="15"
+                :value="getpercentage(data.analogValues)"
+                color="accent"
+              >
+                {{ Math.round(getpercentage(data.analogValues))  }}%
+              </v-progress-circular>
+              <v-card-text class="title">{{data.analogValues}}</v-card-text>
+        </v-card>
+        </v-col>
+          <v-col cols=10 sm=2>
+       <v-card 
+                elevation="2" 
+                class="ma-1 grey darken-2"
+                >
+              <v-card-title class="title justify-center" > Binary
+              </v-card-title>
+              <v-progress-circular
+                class="mb-6"
+                :rotate="360"
+                :size="100"
+                :width="15"
+                :value="getpercentage(data.binaryValues)"
+                color="accent"
+              >
+                {{ Math.round(getpercentage(data.binaryValues))  }}%
+              </v-progress-circular>
+              <v-card-text class="title">{{data.binaryValues}}</v-card-text>
+        </v-card>
+        </v-col>
     </v-row>
+  </v-card>
 </template>
 
 <script>
@@ -85,7 +135,10 @@ export default {
                return 1
            }
            return res
-        }
+        },
     },
 }
 </script>
+<style scoped>
+
+</style>

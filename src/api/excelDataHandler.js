@@ -52,6 +52,10 @@ function readData() {
             finalObject.maxValue = object['Main Value.Max'];
             finalObject.alias = object['Alias'];
             finalObject.description = object['Object Description'];
+            if (object.dataType === "VT_BOOL" || object.dataType === "VT_I4") {
+                finalObject.building = "other";
+                finalObject.subsystemType = "desigoCC";
+            }
             data.filteredObjects.push(finalObject);
             updateObjectModelSummary(data.validObjectModels, object);
         }
@@ -67,28 +71,22 @@ function readData() {
     });
 }
 
-function createOPCfiles(fileName) {
-    let browserObjects = objectTimeline.get(fileName);
-    createClientExcel(getClientList(browserObjects.filteredObjects, "BAC", "B01"), "01");
-    createClientExcel(getClientList(browserObjects.filteredObjects, "BAC", "B02"), "02");
-    createClientExcel(getClientList(browserObjects.filteredObjects, "BAC", "B03", "B05", "B06", "B07"), "03");
-    createClientExcel(getClientList(browserObjects.filteredObjects, "S7", "B06"), "04");
-    createClientExcel(getClientList(browserObjects.filteredObjects, "S7", "B01", "B02", "B03", "B04"), "05");
+async function createOPCfiles(fileName) {
+    let data = await objectTimeline.get(fileName);
+    createClientExcel(getClientList(data.filteredObjects, "BAC", "B01"), "01");
+    createClientExcel(getClientList(data.filteredObjects, "BAC", "B02"), "02");
+    createClientExcel(getClientList(data.filteredObjects, "BAC", "B03", "B05", "B06", "B07"), "03");
+    createClientExcel(getClientList(data.filteredObjects, "S7", "B06"), "04");
+    createClientExcel(getClientList(data.filteredObjects, "S7", "B01", "B02", "B03", "B04"), "05");
 
     let wbClient06 = XLSX.utils.book_new();
-    let managementData = [];
-    filteredObjects.filter(object => object.dataType === "VT_BOOL" || object.dataType === "VT_I4").forEach(object => {
-        object.building = "other";
-        object.subsystemType = "desigoCC";
-        managementData.push(object);
-    });
-    let dataClient06 = XLSX.utils.json_to_sheet(managementData);
+    let dataClient06 = XLSX.utils.json_to_sheet(data.filteredObjects.filter(object => object.dataType === "VT_BOOL" || object.dataType === "VT_I4"));
     dataClient06["!autofilter"] = { ref: "A1:I9" };
     XLSX.utils.book_append_sheet(wbClient06, dataClient06, "Client006_Management");
     XLSX.writeFile(wbClient06, path.join(__dirname, '../download/client006.xlsx'));
     let wbAlias = XLSX.utils.book_new();
     let aliasList = [];
-    filteredObjects.forEach(object => {
+    data.filteredObjects.forEach(object => {
         aliasList.push({
             Alias: object.alias
         });
