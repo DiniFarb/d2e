@@ -1,35 +1,13 @@
 <template>
   <v-app id="app">
-    <AppBar></AppBar>
-    <v-container>
-      <br>
-      <router-view :state="state"></router-view>
-      <div>
-        <v-alert type="error" v-if="error">Something went wrong 😐 <br>{{error}}</v-alert>
-      </div>
-    </v-container>
+    <h1 class="AppTitle">D2E Tool</h1>
+    <router-view></router-view>
   </v-app>
 </template>
 <script>
-import AppBar from '@/views/AppBar';
-import REST_interface from './REST_interface'
+
 export default {
-  components: {
-    AppBar: AppBar
-  },
-  data() {
-    return {
-      state: [],
-      error: '',
-    }
-  },
-  async created() {
-    try {
-      this.state = await REST_interface.getState();
-    } catch (e) {
-      this.error = e.message;
-    }
-  },
+ 
 }
 </script>
 <style lang="scss">
@@ -38,20 +16,10 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #606a78;
-  background: #2a3441;
+  background: #6f7d95;
+}
+.AppTitle{
+  font-size: 80px;
 }
 
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #a2a7af;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
 </style>

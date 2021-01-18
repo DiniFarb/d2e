@@ -14,6 +14,36 @@ class REST_interface {
             })))
     }
 
+    static getImp(key) {
+        return new Promise(((resolve, reject) =>
+            axios.get(url + '/impData', {
+                params: {
+                    key: key
+                },
+            }).then((res) => {
+                resolve(
+                    res.data
+                );
+            }).catch((err) => {
+                reject(err);
+            })))
+    }
+
+    static createOPCfiles(key) {
+        return new Promise(((resolve, reject) =>
+            axios.get(url + '/createOPCfiles', {
+                params: {
+                    key: key
+                },
+            }).then((res) => {
+                resolve(
+                    res.data
+                );
+            }).catch((err) => {
+                reject(err);
+            })))
+    }
+
     static importExcel() {
         return new Promise(((resolve, reject) =>
             axios.get(url + '/import').then((res) => {
