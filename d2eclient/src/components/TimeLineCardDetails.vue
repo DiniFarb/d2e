@@ -13,7 +13,7 @@
        <v-col cols=10 sm=2>
        <v-card 
                 elevation="2" 
-                class="ma-1 secondary"
+                class="ma-1 grey darken-3"
                 >
               <v-card-title class="title justify-center" > BACnet
               </v-card-title>
@@ -33,7 +33,7 @@
          <v-col cols=10 sm=2>
        <v-card  
                 elevation="2" 
-                class="ma-1 secondary"
+                class="ma-1 grey darken-3"
                 >
               <v-card-title class="title justify-center" > S7
               </v-card-title>
@@ -53,7 +53,7 @@
          <v-col cols=10 sm=2>
        <v-card 
                 elevation="2" 
-                class="ma-1 secondary"
+                class="ma-1 grey darken-3"
                 >
               <v-card-title class="title justify-center" > DesigoCC
               </v-card-title>

@@ -14,6 +14,7 @@ try {
 function readData() {
     let data = {
         filteredObjects: [],
+        unfilteredObjects: [],
         browserObjects: [],
         summary: {
             objectModels: []
@@ -39,10 +40,30 @@ function readData() {
         imported_at: new Date()
     };
     data.browserObjects.forEach(object => {
+        //porps
+        let unfilteredObject = {};
+        let finalObject = {};
+        let objectRefPreEdit = object['Object Designation [System1.Management View]'].replace(/System1.ManagementView:|System1.ApplicationView:/g, "");
+        //Unfiltert for Frontend
+        unfilteredObject.building = objectRefPreEdit.slice(39, 42);
+        unfilteredObject.ccRef = objectRefPreEdit
+        unfilteredObject.subsystemType = objectRefPreEdit.slice(43, 46).replace(".", "");
+        unfilteredObject.objectModel = object['Object Model'];
+        unfilteredObject.unit = object['Main Value.Unit'];
+        unfilteredObject.minValue = object['Main Value.Min'];
+        unfilteredObject.maxValue = object['Main Value.Max'];
+        unfilteredObject.alias = object['Alias'];
+        unfilteredObject.description = object['Object Description'];
+        if (unfilteredObject.subsystemType !== "S7" && unfilteredObject.subsystemType !== "BAC") {
+            unfilteredObject.subsystemType = "desigoCC";
+        }
+        if (!unfilteredObject.building.startsWith("B0")) {
+            unfilteredObject.building = "virtual value";
+        }
+        data.unfilteredObjects.push(unfilteredObject);
+        //FILTERING!!!
         if (object['Alias'] !== "" && data.validObjectModels.map(({ objectModel }) => objectModel).includes(object['Object Model']) &&
             checkIfItsAnAllowedStringValue(object, data.notAllowedStrings)) {
-            let finalObject = {};
-            let objectRefPreEdit = object['Object Designation [System1.Management View]'].replace(/System1.ManagementView:|System1.ApplicationView:/g, "");
             finalObject.building = objectRefPreEdit.slice(39, 42);
             finalObject.opcTag = objectRefPreEdit + "." + data.validObjectModels.find(item => item.objectModel === object['Object Model']).readProperty;
             finalObject.subsystemType = objectRefPreEdit.slice(43, 46).replace(".", "");
@@ -53,7 +74,7 @@ function readData() {
             finalObject.alias = object['Alias'];
             finalObject.description = object['Object Description'];
             if (object.dataType === "VT_BOOL" || object.dataType === "VT_I4") {
-                finalObject.building = "other";
+                finalObject.building = "virtual value";
                 finalObject.subsystemType = "desigoCC";
             }
             data.filteredObjects.push(finalObject);

@@ -1,5 +1,14 @@
 <template>
-  <v-card class="secondary pa-2" :disabled="loading">
+  <v-card class="grey darken-3">
+    <v-card-title
+    class="accent"
+    >Download files ..
+    <v-spacer></v-spacer>
+    <v-btn
+    @click="close"
+    >close</v-btn> 
+    </v-card-title>
+    <div class=" ma-2 pa-1">
     <v-progress-linear
       v-if="loading"
       color="accent"
@@ -11,37 +20,114 @@
     <v-alert type="success" text v-if="!loading && error === ''">
       Flies are ready to downlaod
     </v-alert>
-    <v-alert type="error" text v-if="!loading && error !== ''">
+    <v-alert type="error" text v-if="error !== ''">
       {{ error }}
     </v-alert>
-    <v-card-actions class="d-flex justify-center">
-      <v-btn class="DlButton" @click="downloadClientList('001')">
+     </div>
+    <v-card-actions 
+     class="d-flex justify-center"
+    >
+      <v-tooltip top>
+      <template v-slot:activator="{ on, attrs }">
+      <v-btn
+          class="ma-1" 
+          @click="downloadClientList('001')"
+          :disabled="loading || error !== ''"
+          v-bind="attrs"
+          v-on="on">
         Client 1
       </v-btn>
-      <v-btn class="DlButton" @click="downloadClientList('002')">
+      </template>
+      <span>BACnet values of B01</span>
+      </v-tooltip>
+
+      <v-tooltip top>
+      <template v-slot:activator="{ on, attrs }">
+      <v-btn
+          class="ma-1" 
+          @click="downloadClientList('002')"
+          :disabled="loading || error !== ''"
+          v-bind="attrs"
+          v-on="on">
         Client 2
       </v-btn>
-      <v-btn class="DlButton" @click="downloadClientList('003')">
+      </template>
+      <span>BACnet values of B02</span>
+      </v-tooltip>
+
+      <v-tooltip top>
+      <template v-slot:activator="{ on, attrs }">
+      <v-btn
+          class="ma-1" 
+          @click="downloadClientList('003')"
+          :disabled="loading || error !== ''"
+          v-bind="attrs"
+          v-on="on">
         Client 3
       </v-btn>
+      </template>
+      <span>BACnet values of B03 / B05 / B06 / B07</span>
+      </v-tooltip>
 
-      <v-btn class="DlButton" @click="downloadClientList('004')">
+      <v-tooltip top>
+      <template v-slot:activator="{ on, attrs }">
+      <v-btn
+          class="ma-1" 
+          @click="downloadClientList('004')"
+          :disabled="loading || error !== ''"
+          v-bind="attrs"
+          v-on="on">
         Client 4
       </v-btn>
+      </template>
+      <span>S7 values of B06</span>
+      </v-tooltip>
 
-      <v-btn class="DlButton" @click="downloadClientList('005')">
+      <v-tooltip top>
+      <template v-slot:activator="{ on, attrs }">
+      <v-btn
+          class="ma-1" 
+          @click="downloadClientList('005')"
+          :disabled="loading || error !== ''"
+          v-bind="attrs"
+          v-on="on">
         Client 5
       </v-btn>
-      <v-btn class="DlButton" @click="downloadClientList('006')">
+      </template>
+      <span>S7 values of B01 / B02 / B03 / B04</span>
+      </v-tooltip>
+     
+     <v-tooltip top>
+      <template v-slot:activator="{ on, attrs }">
+      <v-btn
+          class="ma-1" 
+          @click="downloadClientList('006')"
+          :disabled="loading || error !== ''"
+          v-bind="attrs"
+          v-on="on">
         Client 6
       </v-btn>
+      </template>
+      <span>DesigoCC values</span>
+      </v-tooltip>
+      
+      <v-tooltip top>
+      <template v-slot:activator="{ on, attrs }">
       <v-btn
-        class="DlButton"
-        @click="downloadAliasList()"
-        >
+          class="ma-1" 
+          @click="downloadAliasList()"
+          :disabled="loading || error !== ''"
+          v-bind="attrs"
+          v-on="on">
         Alias list
-        </v-btn>
+      </v-btn>
+      </template>
+      <span>Alias list for SQL connection</span>
+      </v-tooltip>
     </v-card-actions>
+    <v-card-text>
+      The client files are divided by buildings and drivers..
+    </v-card-text>
   </v-card>
 </template>
 

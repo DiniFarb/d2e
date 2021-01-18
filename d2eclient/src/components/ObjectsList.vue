@@ -1,16 +1,24 @@
 <template>
-<v-card color="blue-grey darken-2">
-    <v-card-title>
+<v-card color="grey darken">
+      <v-card-title
+    class="accent">
+    {{type === 'filteredObjects' ? 'Valid objects' : 'Imported objects'}}
+    <v-spacer></v-spacer>
+    <v-btn
+    @click="close"
+    >close</v-btn>    
+    </v-card-title>
       <v-text-field
+        class="ma-2"
         v-model="search"
         append-icon="mdi-magnify"
         label="Search"
         outlined
         hide-details
       ></v-text-field>
-    </v-card-title>
     <v-data-table
-      class="blue-grey darken-2"
+      dense
+      class="grey darken pa-1"
       :headers="headers"
       :loading="loading"
       :items="data"
@@ -88,9 +96,22 @@ export default {
     },
     async created(){
         this.loading = true
+        if(this.type === "unfilteredObjects"){
+            this.headers[1] =
+            {
+                text: 'CC Reference',
+                align: 'start',
+                value: 'ccRef',
+            };
+            this.headers[3] =
+            {
+                text: 'Object Model',
+                align: 'start',
+                value: 'objectModel',
+            };
+        }
         await REST_interface.getImp(this.key.toString()).then(
             res=>{
-                console.log(this.type)
               this.data = res[this.type]
               this.loading = false  
             }
@@ -103,7 +124,7 @@ export default {
     },
     methods:{
         close(){
-            this.$emit("close-details");
+            this.$emit("close-list");
         }
     }
 }

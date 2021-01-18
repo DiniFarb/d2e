@@ -1,6 +1,5 @@
 <template>
 <v-container>
-<h1>D2E Tool</h1>
   <v-overlay
         :value="loading"
     >
@@ -8,17 +7,16 @@
           size="128"
           indeterminate
       >
-
       </v-progress-circular>
     </v-overlay>
     <v-card
-    class="mx-auto"
+    class="mx-auto grey darken"
     max-width="1000"
-    color="blue-grey darken-2"
+     elevation="24"
   >
     <v-card-title
       dark
-      class="blue-grey darken-3 white--text"
+      class="accent"
     >
       <span class="title">Imports</span>
       <v-spacer></v-spacer>
@@ -33,14 +31,19 @@
       <v-timeline-item
       v-for="(item, i) in items"
       :key="i"
-      small
+      color="accent"
       >
       <TimelineCard :key="i" :data="item" />
     </v-timeline-item>
      </v-slide-x-reverse-transition>
     </v-timeline>
     </v-card-text>
+    <v-alert class="ma-1" type="error" text v-if="error !== ''">
+      {{ error }}
+      <v-btn class="error" @click="error = ''">OK</v-btn>
+    </v-alert>
   </v-card>
+  
 </v-container>
 </template>
 
@@ -79,9 +82,6 @@ export default {
             this.loadinge = false
             this.error = "NO DATA"
           }
-          this.timeline.sort(function(a,b){
-            return new Date(b.key) - new Date(a.key);
-          });
         });
         this.loading = false;
       } catch (e) {

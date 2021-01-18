@@ -1,20 +1,20 @@
 <template>
     <div>
     <v-card
-        dark
+        class="grey darken-3"
       >
-        <v-card-title class="title grey darken-3"
+        <v-card-title class="title accent"
        
         >{{parseDate(data.imported_at)}}
              <v-spacer></v-spacer>
              <v-btn
-             class="ma-1 accent"
+             class="ma-1 "
              @click="exportView = true"
              >
             Export
           </v-btn>
           <v-btn
-             class="ma-1 accent"
+             class="ma-1"
              @click="detailView = true"
              >
             Details
@@ -25,7 +25,7 @@
                 <h2 class="title">
                     Imported objects 
                     <v-btn
-                    class="accent"
+                    class="warning"
                     @click="listViewIO = true"
                     >{{item.objectsTotal}}</v-btn>
                 </h2>
@@ -69,7 +69,7 @@
             <ObjectsList
             :listType="'filteredObjects'"
             :id="data.imported_at" 
-            @close-download="listViewVO = false"
+            @close-list="listViewVO = false"
              />
        </v-dialog>
        <v-dialog
@@ -78,9 +78,9 @@
             max-width="80%"
             >
             <ObjectsList
-            :listType="'browserObjects'"
+            :listType="'unfilteredObjects'"
             :id="data.imported_at" 
-            @close-download="listViewIO = false"
+            @close-list="listViewIO = false"
              />
        </v-dialog>
       </div>
@@ -106,8 +106,8 @@ export default {
             item: this.data,
             detailView: false,
             exportView:false,
-            listViewVO:false,
-            listViewIO:false,
+            listViewIO: false,
+            listViewVO: false,
         }
     },
     methods:{
