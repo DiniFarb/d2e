@@ -5,7 +5,7 @@ import { config } from 'dotenv';
 import { readData, createOPCfiles, getData, getSumData } from'./excelDataHandler.js';
 
 const router = express.Router();
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const __dirname = path.dirname(new URL(import.meta.url).pathname).slice(1);
 config();
 
 if (process.env.AUTOIMPORT === 'YES') {
@@ -26,41 +26,41 @@ router.get('/', async(req, res) => {
   });
 });
 
-router.get('/impData', async(req, res) => {
-  logger.info('Get datails for import ' + req.query.key);
-  await getData(req.query.key).then(data => {
-    res.json(
-      data
-    );
-  }).catch(err => {
-    res.status(500).send({ message: 'Can\'t load data: ' + err });
-  });
+router.get('/impData', async(req, res, next) => {
+  logger.info('Get import details ' + req.query.key);
+  try {
+    const data = await getData(req.query.key);
+    res.send(data);
+  } catch(err){
+    logger.error(`Get import details failed: ${err.message}`);
+    next(err);
+  }
 });
 
 router.get('/import', async(req, res, next) => {
-  logger.info('Import file from src directory');
+  logger.info('Start file import. . .');
   try {
-    await readData();
+    readData();
     res.status(200).send('Import done and client files created');
   } catch (err) {
-    logger.error('Import error: ' + err.message);
+    logger.error(`File import error: ${err.message}`);
     next(err);
   }
 });
 
 router.get('/createOPCfiles', async(req, res, next) => {
-  logger.info('create files for import ' + req.query.key);
+  logger.info(`Start creating OPC files ${req.query.key}`);
   try {
     await createOPCfiles(req.query.key);
     res.status(200).send('Import done and client files created');
   } catch (err) {
-    logger.error('File read error: ' + err.message);
+    logger.error(`File import read: ${err.message}`);
     next(err);
   }
 });
 
 router.get('/downloadClientList', (req, res, next) => {
-  logger.info('Get client list client ' + JSON.stringify(req.query.clientNumber));
+  logger.info(`Get client file: ${JSON.stringify(req.query.clientNumber)}`);
   res.setHeader(
     'Content-Type',
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -73,13 +73,13 @@ router.get('/downloadClientList', (req, res, next) => {
   try {
     res.download(path.join(__dirname, '../download/client' + req.query.clientNumber + '.xlsx'));
   } catch (err) {
-    logger.error('download error: ' + err.message);
+    logger.error(`Download error: ${err.message}`);
     next(err);
   }
 });
 
 router.get('/aliasList', (req, res, next) => {
-  logger.info('Get alias list ');
+  logger.info('Get alias file');
   res.setHeader(
     'Content-Type',
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -88,11 +88,10 @@ router.get('/aliasList', (req, res, next) => {
     'Content-Disposition',
     'attachment; filename=alias_list.xlsx'
   );
-
   try {
     res.download(path.join(__dirname, '../download/alias_list.xlsx'));
   } catch (err) {
-    logger.error('download error: ' + err.message);
+    logger.error(`Download error: ${err.message}`);
     next(err);
   }
 });

@@ -6,7 +6,7 @@ import api from './routes/api.js';
 import { config } from 'dotenv';
 import path from 'path';
 
-const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const __dirname = path.dirname(new URL(import.meta.url).pathname).slice(1);
 config();
 
 const app = express();
