@@ -1,13 +1,9 @@
-#!/usr/bin/env node
-const serverLog = require('./serverlog/serverlogger');
-const app = require('./app');
-require('dotenv').config();
+import app from './app.js';
+import logger from './logger.js';
 
-const port = process.env.PORT;
+const port = process.env.PORT || 5000;
 app.listen(port, () => {
-    /* eslint-disable no-console */
-    serverLog.info(`Listening: http://localhost:${port}`);
-    /* eslint-enable no-console */
+  logger.info(`service is running on:: [${port}]`);
 });
 
 

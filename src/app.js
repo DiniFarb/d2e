@@ -1,26 +1,23 @@
-const express = require('express');
-const morgan = require('morgan');
-const helmet = require('helmet');
-const cors = require('cors');
-const fs = require('fs');
-const path = require('path');
-const middlewares = require('./middlewares');
-const api = require('./api');
+import express from 'express';
+import helmet from 'helmet';
+import cors from 'cors';
+import { notFound, errorHandler } from './middlewares.js';
+import api from './routes/api.js';
+import { config } from 'dotenv';
+import path from 'path';
+
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
+config();
+
 const app = express();
 
-app.use(morgan('dev'));
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-
-const accessLogStream = fs.createWriteStream(path.join(__dirname, '../logs/access.log'), { flags: 'a' })
-app.use(morgan('combined', { stream: accessLogStream }));
 app.use(express.static(__dirname + '/public/'));
 app.use('/api/v1', api);
+app.use(notFound);
+app.use(errorHandler);
 
-app.use(middlewares.notFound);
-app.use(middlewares.errorHandler);
-
-
-module.exports = app;
+export default app;
